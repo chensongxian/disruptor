@@ -15,9 +15,13 @@ import com.lmax.disruptor.dsl.ProducerType;
 public class Main {  
     public static void main(String[] args) throws InterruptedException {  
        
-    	long beginTime=System.currentTimeMillis();  
-        int bufferSize=1024;  
-        ExecutorService executor=Executors.newFixedThreadPool(8);  
+    	long beginTime=System.currentTimeMillis();
+
+        int bufferSize=1024;
+
+        int threadNumbers=8;
+
+        ExecutorService executor=Executors.newFixedThreadPool(threadNumbers);
 
         Disruptor<Trade> disruptor = new Disruptor<Trade>(new EventFactory<Trade>() {
             @Override  
@@ -35,6 +39,7 @@ public class Main {
         handlerGroup.then(new Handler3());
         */
 
+
         
         //顺序操作
         /**
@@ -42,6 +47,8 @@ public class Main {
         	handleEventsWith(new Handler2()).
         	handleEventsWith(new Handler3());
         */
+
+
         
         //六边形操作. 
         /**
@@ -55,8 +62,7 @@ public class Main {
         disruptor.after(h2).handleEventsWith(h5);
         disruptor.after(h4, h5).handleEventsWith(h3);
         */
-        
-        
+
         
         disruptor.start();//启动  
         CountDownLatch latch=new CountDownLatch(1);  
